@@ -1,0 +1,14 @@
+{
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "discord.js": "^11.2.1",
+    "express": "^4.16.2",
+    "rollup": "^0.52.3"
+  },
+  "scripts": {
+    "test": "echo n/a",
+    "build": "./node_modules/.bin/rollup -C",
+    "dev": "yarn run build && node build/bundle.js"
+  }
+}
