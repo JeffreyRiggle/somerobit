@@ -1,12 +1,19 @@
 import express from 'express';
 import Discord from 'discord.js';
 import config from './config';
+import {addChannel, broadcast} from './messagebroadcaster';
 
-const client = express();
-const bot = new Discord.Client();
+const server = express();
+const client = new Discord.Client();
 
-bot.login(config.token).then(() => {
+client.login(config.token).then(() => {
     console.log('logged in.');
+    client.channels.forEach(channel => {
+        if (channel && channel.id) {
+            addChannel(channel);
+        }
+    });
+    broadcast('Hello World');
 }).catch(error => {
-    console.log('login failed');
+    console.log('login failed ' + error);
 });
