@@ -1,7 +1,8 @@
 import express from 'express';
 import Discord from 'discord.js';
 import fs from 'fs';
-import {addTextChannel, broadcast} from './messagebroadcaster';
+import {addChannel} from './channelCache';
+import {broadcast} from './messagebroadcaster';
 import {processActions} from './deferedActionProcessor';
 
 const server = express();
@@ -36,9 +37,7 @@ const startServer = () => {
         client.channels.forEach(channel => {
             console.log('Found channel ' + channel.id + ' with type ' + channel.type);
     
-            if (channel && channel.id && channel.type === 'text') {
-                addTextChannel(channel);
-            }
+            addChannel(channel);
         });
     
         broadcast(config.greeting);

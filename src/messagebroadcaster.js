@@ -1,22 +1,12 @@
-let channels = new Map();
-
-const addTextChannel = (channel) => {
-    channels.set(channel.id, channel);
-};
-
-const removeTextChannel = (channel) => {
-    channels.delete(channel.id);
-};
-
-const clearTextChannels = () => {
-    channels.clear();
-};
+import {textChannelMap} from './channelCache';
 
 const broadcast = (message, channelIds) => {
+    let channels = textChannelMap();
+
     if (!channelIds) {
         for (let channel of channels.values()) {
             sendMessage(channel, message);
-        };
+        }
 
         return;
     }
@@ -33,6 +23,8 @@ const broadcast = (message, channelIds) => {
 };
 
 const broadcastTTS = (message, channelIds) => {
+    let channels = textChannelMap();
+
     if (!channelIds) {
         for (let channel of channels.values()) {
             sendTTSMessage(channel, message);
@@ -53,6 +45,8 @@ const broadcastTTS = (message, channelIds) => {
 };
 
 const broadcastToChannel = (message, id) => {
+    let channels = textChannelMap();
+
     let channel = channels.get(id);
 
     if (!channel) {
@@ -63,6 +57,8 @@ const broadcastToChannel = (message, id) => {
 };
 
 const broadcastTTSToChannel = (message, id) => {
+    let channels = textChannelMap();
+
     let channel = channels.get(id);
 
     if (!channel) {
@@ -91,9 +87,6 @@ const sendTTSMessage = (channel, message) => {
 };
 
 export {
-    addTextChannel,
-    removeTextChannel,
-    clearTextChannels,
     broadcast,
     broadcastTTS,
     broadcastToChannel,

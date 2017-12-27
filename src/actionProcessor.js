@@ -1,4 +1,5 @@
 import {broadcast, broadcastTTS, broadcastToChannel, broadcastTTSToChannel} from './messagebroadcaster';
+import {embedToChannel} from './embedder';
 
 const process = action => {
     switch (action.type) {
@@ -8,6 +9,8 @@ const process = action => {
         case "broadcastrandom":
             processRandomBroadcastAction(action);
             break;
+        case "embed":
+            processEmbedAction(action);
         default:
             break;
     }
@@ -52,7 +55,11 @@ const getRandomMessage = action => {
     let index = Math.floor(Math.random() * max);
 
     return action.messages[index];
-}
+};
+
+const processEmbedAction = action => {
+    embedToChannel(action.channel, action.embed);
+};
 
 export {
     process
