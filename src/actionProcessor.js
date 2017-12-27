@@ -1,4 +1,4 @@
-import {broadcast, broadcastToChannel} from './messagebroadcaster';
+import {broadcast, broadcastTTS, broadcastToChannel, broadcastTTSToChannel} from './messagebroadcaster';
 
 const process = action => {
     switch (action.type) {
@@ -14,11 +14,21 @@ const process = action => {
 };
 
 const processBroadcastAction = action => {
-    broadcastAction(action.channel, action.message);
+    if (action.tts) {
+        broadcastTTSAction(action.channel, action.message);
+    } else {
+        broadcastAction(action.channel, action.message);
+    }
 };
 
 const processRandomBroadcastAction = action => {
-    broadcastAction(action.channel, getRandomMessage(action));   
+    let message = getRandomMessage(action);
+
+    if (action.tts) {
+        broadcastTTSAction(action.channel, message);
+    } else {
+        broadcastAction(action.channel, message);
+    }
 };
 
 const broadcastAction = (channel, message) => {
@@ -26,6 +36,14 @@ const broadcastAction = (channel, message) => {
         broadcastToChannel(message, channel);
     } else {
         broadcast(message);
+    }
+};
+
+const broadcastTTSAction = (channel, message) => {
+    if (channel) {
+        broadcastTTSToChannel(message, channel);
+    } else {
+        broadcastTTS(message);
     }
 };
 

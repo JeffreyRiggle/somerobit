@@ -41,7 +41,7 @@ const startServer = () => {
             }
         });
     
-        broadcast('Hello World');
+        broadcast(config.greeting);
         processActions(config.actions);
     }).catch(error => {
         console.log('login failed ' + error);
