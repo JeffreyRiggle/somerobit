@@ -1,5 +1,5 @@
 yarn.lock
 /build/
 /node_modules/
-/src/config.js
+config.json
 npm-debug.log

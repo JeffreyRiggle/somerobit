@@ -1,14 +1,14 @@
 let channels = new Map();
 
-const addChannel = (channel) => {
+const addTextChannel = (channel) => {
     channels.set(channel.id, channel);
 };
 
-const removeChannel = (channel) => {
+const removeTextChannel = (channel) => {
     channels.delete(channel.id);
 };
 
-const clearChannels = () => {
+const clearTextChannels = () => {
     channels.clear();
 };
 
@@ -32,6 +32,16 @@ const broadcast = (message, channelIds) => {
     });
 };
 
+const broadcastToChannel = (message, id) => {
+    let channel = channels.get(id);
+
+    if (!channel) {
+        return;
+    }
+
+    sendMessage(channel, message);
+}
+
 const sendMessage = (channel, message) => {
     channel.send(message).then(message => {
         console.log('Sent message ' + message.content);
@@ -41,8 +51,9 @@ const sendMessage = (channel, message) => {
 };
 
 export {
-    addChannel,
-    removeChannel,
-    clearChannels,
-    broadcast
+    addTextChannel,
+    removeTextChannel,
+    clearTextChannels,
+    broadcast,
+    broadcastToChannel
 };
