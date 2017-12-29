@@ -1,5 +1,6 @@
 import {broadcast, broadcastTTS, broadcastToChannel, broadcastTTSToChannel} from './messagebroadcaster';
 import {embedToChannel} from './embedder';
+import {makeRequest} from './httpManager';
 
 const process = action => {
     switch (action.type) {
@@ -11,6 +12,10 @@ const process = action => {
             break;
         case "embed":
             processEmbedAction(action);
+            break;
+        case "http":
+            processHttpAction(action);
+            break;
         default:
             break;
     }
@@ -59,6 +64,14 @@ const getRandomMessage = action => {
 
 const processEmbedAction = action => {
     embedToChannel(action.channel, action.embed);
+};
+
+const processHttpAction = action => {
+    makeRequest(action.method, action.url, action.body).then(data => {
+        console.log(`request to ${action.url} succeeded`);
+    }).catch(error => {
+        console.log(`request to ${action.url} failed with ${error}`);
+    });
 };
 
 export {

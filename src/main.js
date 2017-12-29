@@ -1,11 +1,11 @@
-import express from 'express';
 import Discord from 'discord.js';
 import fs from 'fs';
 import {addChannel} from './channelCache';
 import {broadcast} from './messagebroadcaster';
 import {processActions} from './deferedActionProcessor';
+import {addAction} from './actionRepository';
+import { startListening } from './messageListener';
 
-const server = express();
 const client = new Discord.Client();
 let configFile = '';
 let config = {};
@@ -41,8 +41,17 @@ const startServer = () => {
         });
     
         broadcast(config.greeting);
-        processActions(config.actions);
+        processConfig();
+        startListening(client);
     }).catch(error => {
         console.log('login failed ' + error);
     });
-}
+};
+
+const processConfig = () => {
+    processActions(config.deferredactions);
+
+    config.actions.forEach((val, i, arr) => {
+        addAction(val.id, val.action);
+    });
+};
