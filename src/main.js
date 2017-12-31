@@ -5,6 +5,7 @@ import {broadcast} from './messagebroadcaster';
 import {processActions} from './deferedActionProcessor';
 import {addAction} from './actionRepository';
 import { startListening } from './messageListener';
+import './standardActions/standardActions';
 
 const client = new Discord.Client();
 let configFile = '';

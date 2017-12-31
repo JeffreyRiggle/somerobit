@@ -1,8 +1,9 @@
 import {broadcast, broadcastTTS, broadcastToChannel, broadcastTTSToChannel} from './messagebroadcaster';
 import {embedToChannel} from './embedder';
 import {makeRequest} from './httpManager';
+import {getAction} from './actionRepository';
 
-const process = action => {
+const process = (action, channel) => {
     switch (action.type) {
         case "broadcast":
             processBroadcastAction(action);
@@ -15,6 +16,9 @@ const process = action => {
             break;
         case "http":
             processHttpAction(action);
+            break;
+        case "standard":
+            action.execute(action, channel);
             break;
         default:
             break;

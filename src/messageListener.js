@@ -36,9 +36,11 @@ const processMessage = message => {
 
     if (action.type === 'broadcast' && !action.message && extraDataMatch && extraDataMatch.length >= 2) {
         action.message = extraDataMatch[1];
+    } else if (extraDataMatch && extraDataMatch.length >= 2){
+        action.extraData = extraDataMatch[1];
     }
 
-    process(action);
+    process(action, message.channel.id);
 };
 
 export {
