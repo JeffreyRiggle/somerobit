@@ -1,9 +1,9 @@
-import {addAction} from './actionRepository';
+import {addAction} from '../actionRepository';
 import help from './helpAction';
 
 let actions = [
     { 
-        id: "help",
+        id: 'help',
         action: help
     }
 ];

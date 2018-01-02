@@ -40,7 +40,7 @@ const processMessage = message => {
         action.extraData = extraDataMatch[1];
     }
 
-    process(action, message.channel.id);
+    process(action, message.author);
 };
 
 export {

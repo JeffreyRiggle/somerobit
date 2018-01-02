@@ -16,9 +16,14 @@ const getAction = id => {
     return actions.get(id);
 };
 
+const getActions = () => {
+    return new Map(actions);
+};
+
 export {
     addAction,
     removeAction,
     clearActions,
-    getAction
+    getAction,
+    getActions
 }

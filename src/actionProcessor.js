@@ -3,7 +3,7 @@ import {embedToChannel} from './embedder';
 import {makeRequest} from './httpManager';
 import {getAction} from './actionRepository';
 
-const process = (action, channel) => {
+const process = (action, requester) => {
     switch (action.type) {
         case "broadcast":
             processBroadcastAction(action);
@@ -18,7 +18,7 @@ const process = (action, channel) => {
             processHttpAction(action);
             break;
         case "standard":
-            action.execute(action, channel);
+            action.execute(action, requester);
             break;
         default:
             break;
