@@ -34,6 +34,8 @@ const processMessage = message => {
         action.channel = message.channel.id;
     }
 
+    action.server = message.guild;
+    
     if (action.type === 'broadcast' && !action.message && extraDataMatch && extraDataMatch.length >= 2) {
         action.message = extraDataMatch[1];
     } else if (extraDataMatch && extraDataMatch.length >= 2){

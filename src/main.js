@@ -4,8 +4,10 @@ import {addChannel} from './channelCache';
 import {broadcast} from './messagebroadcaster';
 import {processActions} from './deferedActionProcessor';
 import {addAction} from './actionRepository';
-import { startListening } from './messageListener';
+import {startListening} from './messageListener';
+import {addAudioFiles} from './audioController';
 import './standardActions/standardActions';
+import 'opusscript';
 
 const client = new Discord.Client();
 let configFile = '';
@@ -36,7 +38,7 @@ const startServer = () => {
         console.log('logged in.');
     
         client.channels.forEach(channel => {
-            console.log('Found channel ' + channel.id + ' with type ' + channel.type);
+            console.log(`Found channel ${channel.id} with type ${channel.type} and name ${channel.name} on server ${channel.server}`);
     
             addChannel(channel);
         });
@@ -55,4 +57,8 @@ const processConfig = () => {
     config.actions.forEach((val, i, arr) => {
         addAction(val.id, val.action);
     });
+
+    if (config.audioSource) {
+        addAudioFiles(config.audioSource);
+    }
 };

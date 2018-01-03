@@ -6,6 +6,7 @@
     "discord.js": "^11.2.1",
     "express": "^4.16.2",
     "moment": "^2.20.1",
+    "opusscript": "^0.0.6",
     "rollup": "^0.52.3"
   },
   "scripts": {
