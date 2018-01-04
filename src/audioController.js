@@ -4,6 +4,8 @@ var connection;
 const validAudioFile = /\.(mp3|m4a|flac|wav)/i;
 let audioFiles = new Map();
 let currentSongIndex = 0;
+let stopped = false;
+let currentSong = {};
 
 const setConnection = conn => {
     connection = conn;
@@ -50,11 +52,16 @@ const play = song => {
         return;
     }
 
+    stopped = false;
     let file = getAudioFile(song);
 
-    console.log(`Attempting to play file ${file}`); 
-    connection.playFile(file).once('end', () => {
-        play();
+    console.log(`Attempting to play file ${file.value[1]}`);
+    currentSong.name = file.value[0];
+    currentSong.stream = connection.playFile(file.value[1]);
+    currentSong.stream.once('end', () => {
+        if (!stopped) {
+            play();
+        }
     });
 };
 
@@ -64,14 +71,14 @@ function getAudioFile(song) {
     }
 
     let iter = 0;
-    let fileIter = audioFiles.values();
+    let fileIter = audioFiles.entries();
 
     while (iter < currentSongIndex) {
         fileIter.next();
         iter++;
     }
 
-    let file = fileIter.next().value;
+    let file = fileIter.next();
     currentSongIndex++;
 
     if (currentSongIndex > audioFiles.size) {
@@ -82,12 +89,44 @@ function getAudioFile(song) {
 };
 
 const stop = () => {
+    stopped = true;
+    if (currentSong.stream) {
+        currentSong.stream.end('User ended song');
+        currentSong = {};
+    }
+};
 
+const currentSongName = () => {
+    if (currentSong.name) {
+        return currentSong.name;
+    }
+
+    if (stopped) {
+        return 'No song is playing.';
+    }
+
+    return 'Unknown';
+};
+
+const nextSong = () => {
+    if (stopped) {
+        return false;
+    }
+
+    if (!currentSong.stream) {
+        return false;
+    }
+
+    currentSong.stream.end('User invoked next song');
+    return true;
 };
 
 export {
     setConnection,
     getConnection,
     addAudioFiles,
-    play
+    play,
+    stop,
+    nextSong,
+    currentSongName
 };

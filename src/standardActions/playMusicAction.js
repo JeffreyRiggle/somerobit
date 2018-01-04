@@ -1,6 +1,7 @@
 import {createVoiceChannel} from '../channelManager';
 import {broadcastToChannel} from '../messagebroadcaster';
 import {setConnection, getConnection, play} from '../audioController';
+import {addShutdownAction} from '../shutdownManager';
 
 class PlayMusicAction {
     get type() {
@@ -19,6 +20,15 @@ class PlayMusicAction {
 
         createVoiceChannel(action.server, 'Music').then(channel => {
             this._sendMessage('Music channel has been created', action, requester);
+
+            addShutdownAction(() => {
+                return channel.delete().then(chan => {
+                    console.log('Deleted channel');
+                }).catch(error => {
+                    console.log(`Got error deleteing channel ${error}`);
+                });
+            });
+
             this._startAudio(channel, action.extraData);
         }).catch(error => {
             console.log(`Unable to create music channel ${error}`);

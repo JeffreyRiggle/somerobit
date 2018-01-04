@@ -6,6 +6,7 @@ import {processActions} from './deferedActionProcessor';
 import {addAction} from './actionRepository';
 import {startListening} from './messageListener';
 import {addAudioFiles} from './audioController';
+import {addShutdownAction} from './shutdownManager';
 import './standardActions/standardActions';
 import 'opusscript';
 
@@ -46,8 +47,13 @@ const startServer = () => {
         broadcast(config.greeting);
         processConfig();
         startListening(client);
+        addShutdownAction(() => {
+            console.log('exiting process');
+            process.exit(0);
+        });
     }).catch(error => {
         console.log('login failed ' + error);
+        process.exit(1);
     });
 };
 
