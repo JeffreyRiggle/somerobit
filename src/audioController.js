@@ -5,6 +5,7 @@ const validAudioFile = /\.(mp3|m4a|flac|wav)/i;
 let audioFiles = new Map();
 let currentSongIndex = 0;
 let stopped = false;
+let shuffled = false;
 let currentSong = {};
 
 const setConnection = conn => {
@@ -46,6 +47,16 @@ function getMusicFiles(dir) {
     });
 };
 
+const shuffle = () => {
+    shuffled = !shuffled;
+
+    if (stopped) {
+        play();
+    }
+
+    return shuffled;
+};
+
 const play = song => {
     if (!connection) {
         console.log('Unable to play song since connection does not exist');
@@ -70,15 +81,26 @@ function getAudioFile(song) {
         return audioFiles.get(song);
     }
 
+    let targetIndex = currentSongIndex;
+
+    if (shuffled) {
+        targetIndex = Math.floor(Math.random() * audioFiles.size);
+    }
+
     let iter = 0;
     let fileIter = audioFiles.entries();
 
-    while (iter < currentSongIndex) {
+    while (iter < targetIndex) {
         fileIter.next();
         iter++;
     }
 
     let file = fileIter.next();
+
+    if (shuffled) {
+        return file;
+    }
+
     currentSongIndex++;
 
     if (currentSongIndex > audioFiles.size) {
@@ -126,6 +148,7 @@ export {
     getConnection,
     addAudioFiles,
     play,
+    shuffle,
     stop,
     nextSong,
     currentSongName

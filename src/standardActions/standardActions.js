@@ -5,6 +5,7 @@ import stopMusic from './stopMusicAction';
 import musicInfo from './musicInfoAction';
 import nextSong from './nextSongAction';
 import shutdown from './shutdownAction';
+import shuffleMusic from './shuffleMusicAction';
 
 let actions = [
     { 
@@ -26,6 +27,10 @@ let actions = [
     {
         id: 'nextsong',
         action: nextSong
+    },
+    {
+        id: 'shufflemusic',
+        action: shuffleMusic
     },
     {
         id: 'shutdown',

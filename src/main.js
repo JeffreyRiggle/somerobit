@@ -64,7 +64,11 @@ const processConfig = () => {
         addAction(val.id, val.action);
     });
 
-    if (config.audioSource) {
-        addAudioFiles(config.audioSource);
+    if (!config.audioSources) {
+        return;
     }
+
+    config.audioSources.forEach((source, index, arr) => {
+        addAudioFiles(source);
+    });
 };

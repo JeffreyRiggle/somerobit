@@ -3,7 +3,11 @@ import {embedToChannel} from './embedder';
 import {makeRequest} from './httpManager';
 import {getAction} from './actionRepository';
 
+let lastProcess = null;
+
 const process = (action, requester) => {
+    var retVal;
+
     switch (action.type) {
         case "broadcast":
             processBroadcastAction(action);
@@ -12,20 +16,33 @@ const process = (action, requester) => {
             processRandomBroadcastAction(action);
             break;
         case "embed":
-            processEmbedAction(action);
+            embedToChannel(action.channel, action.embed);
             break;
         case "http":
             processHttpAction(action);
             break;
         case "standard":
-            action.execute(action, requester);
+            retVal = action.execute(action, requester);
+            break;
+        case "multiaction":
+            processMultiAction(action, requester);
+            break;
+        case "invokeaction":
+            retVal = processInvokeAction(action, requester);
             break;
         default:
             break;
     }
+
+    if (!retVal) {
+        console.log(`RetVal for ${action.id} is null`);
+    } else {
+        console.log(`RetVal for ${action.id} is not null`);
+    }
+    return retVal;
 };
 
-const processBroadcastAction = action => {
+function processBroadcastAction(action) {
     if (action.tts) {
         broadcastTTSAction(action.channel, action.message);
     } else {
@@ -33,7 +50,7 @@ const processBroadcastAction = action => {
     }
 };
 
-const processRandomBroadcastAction = action => {
+function processRandomBroadcastAction(action) {
     let message = getRandomMessage(action);
 
     if (action.tts) {
@@ -43,7 +60,7 @@ const processRandomBroadcastAction = action => {
     }
 };
 
-const broadcastAction = (channel, message) => {
+function broadcastAction(channel, message) {
     if (channel) {
         broadcastToChannel(message, channel);
     } else {
@@ -51,7 +68,7 @@ const broadcastAction = (channel, message) => {
     }
 };
 
-const broadcastTTSAction = (channel, message) => {
+function broadcastTTSAction(channel, message) {
     if (channel) {
         broadcastTTSToChannel(message, channel);
     } else {
@@ -59,23 +76,70 @@ const broadcastTTSAction = (channel, message) => {
     }
 };
 
-const getRandomMessage = action => {
+function getRandomMessage(action) {
     let max = action.messages.length - 1;
     let index = Math.floor(Math.random() * max);
 
     return action.messages[index];
 };
 
-const processEmbedAction = action => {
-    embedToChannel(action.channel, action.embed);
-};
-
-const processHttpAction = action => {
+function processHttpAction(action) {
     makeRequest(action.method, action.url, action.body).then(data => {
         console.log(`request to ${action.url} succeeded`);
     }).catch(error => {
         console.log(`request to ${action.url} failed with ${error}`);
     });
+};
+
+function processMultiAction(action, requester) {
+    action.actions.forEach((act, index, arr) => {
+        act.channel = action.channel;
+        act.server = action.server;
+        if (action.extraData) {
+            act.extraData = action.extraData;
+        }
+        runProcess(act, requester);
+    });
+};
+
+function runProcess(action, requester) {
+    if (lastProcess) {
+        console.log(`queueing action ${action.id}`);
+        lastProcess.then(() => {
+            console.log(`running action ${action.id}`);
+            let proc = process(action, requester);
+            if (proc) {
+                lastProcess = proc;
+            }
+        });
+        return;
+    }
+
+    console.log(`running action ${action.id}`);
+    lastProcess = process(action, requester);
+
+    if (lastProcess) {
+        console.log('Last process is not null');
+    } else {
+        console.log('Last process is null');
+    }
+}
+
+function processInvokeAction(action, requester) {
+    let act = getAction(action.id);
+    let retVal;
+
+    act.channel = action.channel;
+    act.server = action.server;
+    if (action.extraData) {
+        act.extraData = action.extraData;
+    }
+
+    if (act) {
+        retVal = process(act, requester);
+    }
+
+    return retVal;
 };
 
 export {
