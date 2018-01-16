@@ -1,7 +1,7 @@
-import {broadcastToChannel} from '../messagebroadcaster';
 import {nextSong} from '../audioController';
+import MessageSender from './messageSender';
 
-class NextSongAction {
+class NextSongAction extends MessageSender {
     get type() {
         return 'standard';
     }
@@ -12,25 +12,11 @@ class NextSongAction {
 
     execute(action, requester) {
         if (nextSong()) {
-            this._sendMessage(`Moved to next song`, action, requester);
+            this.sendMessageToChannel(`Moved to next song`, action, requester);
             return;
         }
 
-        this._sendMessage('Unable to move to the next song', action, requester);
-    }
-
-    _sendMessage(message, action, requester) {
-        if (action.channel) {
-            broadcastToChannel(message, action.channel);
-            delete action.channel;
-            return;
-        }
-
-        requester.sendMessage(message).then(() => {
-            console.log('Message sent');
-        }).catch(err => {
-            console.log('Failed to send message');
-        });
+        this.sendMessageToChannel('Unable to move to the next song', action, requester);
     }
 }
 

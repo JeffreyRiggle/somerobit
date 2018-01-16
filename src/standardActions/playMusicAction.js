@@ -1,9 +1,9 @@
 import {createVoiceChannel} from '../channelManager';
-import {broadcastToChannel} from '../messagebroadcaster';
 import {setConnection, getConnection, play} from '../audioController';
 import {addShutdownAction} from '../shutdownManager';
+import MessageSender from './messageSender';
 
-class PlayMusicAction {
+class PlayMusicAction extends MessageSender {
     get type() {
         return 'standard';
     }
@@ -20,7 +20,7 @@ class PlayMusicAction {
 
         return new Promise((resolve, reject) => {
             createVoiceChannel(action.server, 'Music').then(channel => {
-                this._sendMessage('Music channel has been created', action, requester);
+                this.sendMessageToChannel('Music channel has been created', action, requester);
 
                 addShutdownAction(() => {
                     return channel.delete().then(chan => {
@@ -49,20 +49,6 @@ class PlayMusicAction {
             play(song);
         }).catch(error => {
             console.log(`Unable to join voice channel ${error}`);
-        });
-    }
-
-    _sendMessage(message, action, requester) {
-        if (action.channel) {
-            broadcastToChannel(message, action.channel);
-            delete action.channel;
-            return;
-        }
-
-        requester.sendMessage(message).then(() => {
-            console.log('Message sent');
-        }).catch(err => {
-            console.log('Failed to send message');
         });
     }
 }

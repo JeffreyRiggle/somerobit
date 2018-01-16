@@ -1,6 +1,7 @@
 import {getAction, getActions} from '../actionRepository';
+import MessageSender from './messageSender';
 
-class HelpAction {
+class HelpAction extends MessageSender {
     get type() {
         return 'standard';
     }
@@ -22,26 +23,18 @@ class HelpAction {
 
     execute(action, requester) {
         if (!action.extraData) {
-            this.sendMessage(this.help, requester);
+            this.sendMessageToRequester(this.help, requester);
             return;
         }
     
         let act = getAction(action.extraData);
     
         if (!act || !act.help) {
-            this.sendMessage(`No help available for ${action.extraData}`, requester);
+            this.sendMessageToRequester(`No help available for ${action.extraData}`, requester);
             return;
         }
     
-        this.sendMessage(act.help, requester);
-    }
-
-    sendMessage(message, requester) {
-        requester.sendMessage(message).then(() => {
-            console.log('Message sent');
-        }).catch(err => {
-            console.log('Failed to send message');
-        });
+        this.sendMessageToRequester(act.help, requester);
     }
 }
 

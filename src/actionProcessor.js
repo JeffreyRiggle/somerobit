@@ -34,11 +34,6 @@ const process = (action, requester) => {
             break;
     }
 
-    if (!retVal) {
-        console.log(`RetVal for ${action.id} is null`);
-    } else {
-        console.log(`RetVal for ${action.id} is not null`);
-    }
     return retVal;
 };
 
@@ -117,12 +112,6 @@ function runProcess(action, requester) {
 
     console.log(`running action ${action.id}`);
     lastProcess = process(action, requester);
-
-    if (lastProcess) {
-        console.log('Last process is not null');
-    } else {
-        console.log('Last process is null');
-    }
 }
 
 function processInvokeAction(action, requester) {

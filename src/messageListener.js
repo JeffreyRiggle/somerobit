@@ -1,7 +1,7 @@
 import {getAction} from './actionRepository';
 import {process} from './actionProcessor';
 
-const actionReg = /!robit\s+([^\s]*)/i;
+const actionReg = /^!robit\s+([^\s]*)/i;
 const extraDataReg = /!robit\s+[^\s]*\s(.*)/i;
 
 const startListening = client => {

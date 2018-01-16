@@ -1,7 +1,7 @@
-import {broadcastToChannel} from '../messagebroadcaster';
 import {executeShutdown} from '../shutdownManager';
+import MessageSender from './messageSender';
 
-class ShutdownAction {
+class ShutdownAction extends MessageSender {
     get type() {
         return 'standard';
     }
@@ -11,22 +11,8 @@ class ShutdownAction {
     }
 
     execute(action, requester) {
-        this._sendMessage('Shutting down robit', action, requester);
+        this.sendMessageToChannel('Shutting down robit', action, requester);
         executeShutdown();
-    }
-
-    _sendMessage(message, action, requester) {
-        if (action.channel) {
-            broadcastToChannel(message, action.channel);
-            delete action.channel;
-            return;
-        }
-
-        requester.sendMessage(message).then(() => {
-            console.log('Message sent');
-        }).catch(err => {
-            console.log('Failed to send message');
-        });
     }
 }
 
