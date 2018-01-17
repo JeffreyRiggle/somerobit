@@ -7,6 +7,7 @@ import {addAction} from './actionRepository';
 import {startListening} from './messageListener';
 import {addAudioFiles} from './audioController';
 import {addShutdownAction} from './shutdownManager';
+import {setDefaultAccess, grantAccess, setInvalidAccessMessage} from './accessControl';
 import './standardActions/standardActions';
 import 'opusscript';
 
@@ -71,4 +72,26 @@ const processConfig = () => {
     config.audioSources.forEach((source, index, arr) => {
         addAudioFiles(source);
     });
+
+    if (config.access) {
+        processAccess(config.access);
+    }
 };
+
+function processAccess(access) {
+    if (access.default) {
+        setDefaultAccess(access.default);
+    }
+
+    if (access.deniedMessage) {
+        setInvalidAccessMessage(access.deniedMessage);
+    }
+
+    if (!access.users) {
+        return;
+    }
+
+    access.users.forEach((val, index, arr) => {
+        grantAccess(val.name, val.rights);
+    });
+}

@@ -1,5 +1,7 @@
 import {getAction} from './actionRepository';
 import {process} from './actionProcessor';
+import {hasAccess, invalidAccessMessage} from './accessControl';
+import {broadcastToChannel} from './messagebroadcaster';
 
 const actionReg = /^!robit\s+([^\s]*)/i;
 const extraDataReg = /!robit\s+[^\s]*\s(.*)/i;
@@ -12,12 +14,17 @@ const stopListening = client => {
     client.off('message');
 };
 
-const processMessage = message => {
+function processMessage(message) {
     console.log(`(Channel ${message.channel.id}) ${message.author.username}: ${message.content}`);
     let actionMatch = message.content.match(actionReg);
 
     if (!actionMatch || actionMatch.length < 2) {
         console.log(`ignoring message ${message.content}`);
+        return;
+    }
+
+    if (!hasAccess(message.author.username, actionMatch[1])) {
+        sendMessage(invalidAccessMessage(), message.channel.id, message.author);
         return;
     }
 
@@ -43,6 +50,19 @@ const processMessage = message => {
     }
 
     process(action, message.author);
+};
+
+function sendMessage(message, channel, requester) {
+    if (channel) {
+        broadcastToChannel(message, channel);
+        return;
+    }
+
+    requester.sendMessage(message).then(() => {
+        console.log('Message sent');
+    }).catch(err => {
+        console.log('Failed to send message');
+    });
 };
 
 export {
