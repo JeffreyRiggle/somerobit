@@ -1,6 +1,7 @@
 const fullAccess = '*';
 let accessMap = new Map();
 let defaultAccess = [];
+let possibleAccess = [];
 let deniedMessage = 'You do not have the rights to perform this action';
 
 const setDefaultAccess = (rights) => {
@@ -9,6 +10,16 @@ const setDefaultAccess = (rights) => {
 
 const grantAccess = (user, rights) => {
     let currentRights = accessMap.get(user);
+
+    if (currentRights && currentRights.includes(fullAccess)) {
+        return;
+    }
+
+    if (rights.includes(fullAccess)) {
+        accessMap.set(user, [fullAccess]);
+        return;
+    }
+
     if (currentRights) {
         accessMap.set(user, currentRights.concat(rights));   
     } else {
@@ -22,6 +33,10 @@ const revokeAccess = (user, rights) => {
         return;
     }
 
+    if (currentRights.includes(fullAccess)) {
+        currentRights = possibleAccess;
+    }
+    
     let newRights = currentRights.filter(right => {
         return !rights.includes(right);
     });
@@ -53,6 +68,10 @@ const hasAccess = (user, right) => {
     return retVal;
 };
 
+const userAccess = (user) => {
+    return accessMap.get(user);
+};
+
 const setInvalidAccessMessage = (message) => {
     deniedMessage = message;
 };
@@ -61,11 +80,18 @@ const invalidAccessMessage = () => {
     return deniedMessage;
 };
 
+const addPossibleAccess = (accessRights) => {
+    possibleAccess = possibleAccess.concat(accessRights);
+};
+
 export {
     setDefaultAccess,
     grantAccess,
     revokeAccess,
     hasAccess,
+    userAccess,
     setInvalidAccessMessage,
-    invalidAccessMessage
+    invalidAccessMessage,
+    fullAccess,
+    addPossibleAccess
 }

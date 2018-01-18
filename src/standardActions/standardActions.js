@@ -6,6 +6,10 @@ import musicInfo from './musicInfoAction';
 import nextSong from './nextSongAction';
 import shutdown from './shutdownAction';
 import shuffleMusic from './shuffleMusicAction';
+import grantAccess from './grantAccessAction';
+import userAccess from './userAccessAction';
+import revokeAccess from './revokeAccessAction';
+import {addPossibleAccess} from '../accessControl';
 
 let actions = [
     { 
@@ -35,9 +39,25 @@ let actions = [
     {
         id: 'shutdown',
         action: shutdown
+    },
+    {
+        id: 'grantaccess',
+        action: grantAccess
+    },
+    {
+        id: 'revokeaccess',
+        action: revokeAccess
+    },
+    {
+        id: 'useraccess',
+        action: userAccess
     }
 ];
 
+let ids = [];
 actions.forEach((action, i, arr) => {
+    ids.push(action.id);
     addAction(action.id, action.action);
 });
+
+addPossibleAccess(ids);

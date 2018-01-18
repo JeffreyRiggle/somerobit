@@ -23,15 +23,16 @@ function processMessage(message) {
         return;
     }
 
-    if (!hasAccess(message.author.username, actionMatch[1])) {
-        sendMessage(invalidAccessMessage(), message.channel.id, message.author);
-        return;
-    }
-
     let action = getAction(actionMatch[1]);
 
     if (!action) {
         console.log(`unable to find action ${actionMatch[1]}`);
+        return;
+    }
+
+    let requiredAccess = action.accessOverride ? action.accessOverride : actionMatch[1];
+    if (!hasAccess(message.author.username, requiredAccess)) {
+        sendMessage(invalidAccessMessage(), message.channel.id, message.author);
         return;
     }
 

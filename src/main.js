@@ -7,7 +7,7 @@ import {addAction} from './actionRepository';
 import {startListening} from './messageListener';
 import {addAudioFiles} from './audioController';
 import {addShutdownAction} from './shutdownManager';
-import {setDefaultAccess, grantAccess, setInvalidAccessMessage} from './accessControl';
+import {setDefaultAccess, grantAccess, setInvalidAccessMessage, addPossibleAccess} from './accessControl';
 import './standardActions/standardActions';
 import 'opusscript';
 
@@ -61,9 +61,12 @@ const startServer = () => {
 const processConfig = () => {
     processActions(config.deferredactions);
 
+    let actionIds = [];
     config.actions.forEach((val, i, arr) => {
+        actionIds.push(val.id);
         addAction(val.id, val.action);
     });
+    addPossibleAccess(actionIds);
 
     if (!config.audioSources) {
         return;
