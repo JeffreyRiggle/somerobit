@@ -8,6 +8,11 @@ const processActions = actions => {
             return;
         }
 
+        if (val.daily) {
+            setDailyTime(val);
+            return;
+        }
+
         if (val.reoccuring) {
             setReoccuring(val);
             return;
@@ -34,6 +39,35 @@ const setFutureTime = action => {
     
     setTimeout(() => {
         process(action.action);
+
+        if (action.reoccuring) {
+            setFutureTime(action);
+        }
+    }, futureTime);
+};
+
+const setDailyTime = action => {
+    let time = moment(action.daily, 'HH:mm:ss');
+
+    if (!time.isValid()) {
+        console.log('Invalid time provided: ' + action.timestamp);
+        return;
+    }
+
+    let now = new Date();
+    let futureTime = time.toDate() - now;
+
+    if (futureTime < 0) {
+        time.add(1, 'days');
+        futureTime = time.toDate() - now;
+    }
+    
+    console.log(`Queuing action for ${time.format('YYYY-MM-DD HH:mm')}`);
+
+    setTimeout(() => {
+        process(action.action);
+
+        setDailyTime(action);
     }, futureTime);
 };
 
