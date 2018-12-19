@@ -1,17 +1,20 @@
 {
   "license": "MIT",
   "main": "build/bundle.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2"
+  },
   "dependencies": {
-    "discord.js": "^11.2.1",
+    "discord.js": "^11.4.2",
     "express": "^4.16.2",
     "moment": "^2.20.1",
-    "opusscript": "^0.0.6",
-    "rollup": "^0.52.3"
+    "opusscript": "^0.0.6"
   },
   "scripts": {
     "test": "echo n/a",
-    "build": "./node_modules/.bin/rollup -c",
-    "dev": "yarn run build && node build/bundle.js config.json"
+    "dist": "webpack --mode=development --env.production",
+    "build": "webpack --mode=development --env.development",
+    "dev": "yarn run dist && node dist/bundle.js config.json"
   }
 }
