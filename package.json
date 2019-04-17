@@ -6,8 +6,9 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "discord.js": "^11.4.2",
-    "express": "^4.16.2",
+    "express": "^4.16.4",
     "moment": "^2.20.1",
     "opusscript": "^0.0.6"
   },
@@ -15,6 +16,7 @@
     "test": "echo n/a",
     "dist": "webpack --mode=development --env.production",
     "build": "webpack --mode=development --env.development",
-    "dev": "yarn run dist && node dist/bundle.js config.json"
+    "dev-config": "yarn run dist && node dist/bundle.js config.json",
+    "dev": "yarn run dist && node dist/bundle.js"
   }
 }
