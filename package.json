@@ -16,7 +16,9 @@
     "test": "echo n/a",
     "dist": "webpack --mode=development --env.production",
     "build": "webpack --mode=development --env.development",
+    "build-container": "yarn run build && docker build -t robit .",
+    "dev": "yarn run dist && node dist/bundle.js",
     "dev-config": "yarn run dist && node dist/bundle.js config.json",
-    "dev": "yarn run dist && node dist/bundle.js"
+    "dev-container": "yarn run build-container && docker run -p 8080:8080 -d robit"
   }
 }
