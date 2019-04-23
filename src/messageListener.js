@@ -2,6 +2,7 @@ import {getAction} from './actionRepository';
 import {process} from './actionProcessor';
 import {hasAccess, invalidAccessMessage} from './accessControl';
 import {broadcastToChannel} from './messagebroadcaster';
+import {log} from './logging';
 
 const actionReg = /^!robit\s+([^\s]*)/i;
 const extraDataReg = /!robit\s+[^\s]*\s(.*)/i;
@@ -15,18 +16,18 @@ const stopListening = client => {
 };
 
 function processMessage(message) {
-    console.log(`(Channel ${message.channel.id}) ${message.author.username}: ${message.content}`);
+    log(`(Channel ${message.channel.id}) ${message.author.username}: ${message.content}`);
     let actionMatch = message.content.match(actionReg);
 
     if (!actionMatch || actionMatch.length < 2) {
-        console.log(`ignoring message ${message.content}`);
+        log(`ignoring message ${message.content}`);
         return;
     }
 
     let action = getAction(actionMatch[1]);
 
     if (!action) {
-        console.log(`unable to find action ${actionMatch[1]}`);
+        log(`unable to find action ${actionMatch[1]}`);
         return;
     }
 
@@ -60,9 +61,9 @@ function sendMessage(message, channel, requester) {
     }
 
     requester.sendMessage(message).then(() => {
-        console.log('Message sent');
+        log('Message sent');
     }).catch(err => {
-        console.log('Failed to send message');
+        log('Failed to send message');
     });
 };
 

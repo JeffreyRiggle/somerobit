@@ -1,11 +1,12 @@
 import {broadcastToChannel} from '../messagebroadcaster';
+import {log} from '../logging';
 
 class MessageSender {
     sendMessageToRequester(message, requester) {
         requester.sendMessage(message).then(() => {
-            console.log('Message sent');
+            log('Message sent');
         }).catch(err => {
-            console.log('Failed to send message');
+            log('Failed to send message');
         });
     }
 
@@ -17,9 +18,9 @@ class MessageSender {
         }
 
         requester.sendMessage(message).then(() => {
-            console.log('Message sent');
+            log('Message sent');
         }).catch(err => {
-            console.log('Failed to send message');
+            log('Failed to send message');
         });
     }
 }

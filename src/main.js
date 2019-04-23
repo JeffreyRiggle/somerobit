@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {startServer, getState} from './server';
 import {executeShutdown} from './shutdownManager';
+import {setWatching, log, flush} from './logging';
 import './standardActions/standardActions';
 import 'opusscript';
 
@@ -26,6 +27,7 @@ app.post('/robit/start', (req, res) => {
         return;
     }
 
+    setWatching(true);
     startServer(req.body).then((state) => {
         res.status(200).send({
             status: state
@@ -41,7 +43,7 @@ app.post('/robit/stop', (req, res) => {
     setTimeout(() => {
         executeShutdown();
     });
-    
+
     res.status(200).send({
         state: 'Terminated'
     });
@@ -53,17 +55,21 @@ app.get('/robit/state', (req, res) => {
     });
 });
 
+app.get('/robit/logging', (req, res) => {
+    res.status(200).send(flush());
+});
+
 if (!configFile) {
-    console.log('No Config provided');
+    log('No Config provided');
 } else {
     fs.readFile(configFile, 'utf8', (err, data) => {
         if (err) {
-            console.log('Got error ' + err);
+            log('Got error ' + err);
             return;
         }
     
         startServer(JSON.parse(data)).catch(err => {
-            console.log('Provided config file was wrong shutting down.');
+            log('Provided config file was wrong shutting down.');
             process.exit(1);
         });
     });

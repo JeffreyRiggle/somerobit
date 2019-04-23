@@ -7,6 +7,7 @@ import {startListening} from './messageListener';
 import {addAudioFiles} from './audioController';
 import {addShutdownAction} from './shutdownManager';
 import {setDefaultAccess, grantAccess, setInvalidAccessMessage, addPossibleAccess} from './accessControl';
+import {log} from './logging';
 
 const client = new Discord.Client();
 let state = 'Stopped';
@@ -14,10 +15,10 @@ let state = 'Stopped';
 const startServer = (config) => {
     return new Promise((resolve, reject) => {
         client.login(config.token).then(() => {
-            console.log('logged in.');
+            log('logged in.');
         
             client.channels.forEach(channel => {
-                console.log(`Found channel ${channel.id} with type ${channel.type} and name ${channel.name} on server ${channel.server}`);
+                log(`Found channel ${channel.id} with type ${channel.type} and name ${channel.name} on server ${channel.server}`);
         
                 addChannel(channel);
             });
@@ -26,14 +27,14 @@ const startServer = (config) => {
             processConfig(config);
             startListening(client);
             addShutdownAction(() => {
-                console.log('exiting process');
+                log('exiting process');
                 process.exit(0);
             });
 
             state = 'Running';
             resolve(state);
         }).catch(error => {
-            console.log('login failed ' + error);
+            log('login failed ' + error);
             status = 'Failed';
             reject('Login failed');
         });

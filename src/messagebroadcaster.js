@@ -1,4 +1,5 @@
 import {textChannelMap} from './channelCache';
+import {log} from './logging';
 
 const broadcast = (message, channelIds) => {
     let channels = textChannelMap();
@@ -70,9 +71,9 @@ const broadcastTTSToChannel = (message, id) => {
 
 const sendMessage = (channel, message) => {
     channel.send(message).then(message => {
-        console.log('Sent message ' + message.content);
+        log('Sent message ' + message.content);
     }).catch(error => {
-        console.log('Got error ' + error);
+        log('Got error ' + error);
     });
 };
 
@@ -80,9 +81,9 @@ const sendTTSMessage = (channel, message) => {
     channel.send(message, {
         tts: true
     }).then(message => {
-        console.log('Sent message ' + message.content);
+        log('Sent message ' + message.content);
     }).catch(error => {
-        console.log('Got error ' + error);
+        log('Got error ' + error);
     });
 };
 

@@ -1,4 +1,5 @@
 import http from 'http';
+import {log} from './logging';
 
 const hostReg = /http:\/\/([^:\/]*)|https:\/\/([^:\/]*)|^([^:\/]*)/i;
 const portReg = /http:\/\/[^:]*:([^\/]*)|https:\/\/[^:]*:([^\/]*)|^[^:]*:([^\/]*)/i;
@@ -16,7 +17,7 @@ const makeRequest = (method, url, data) => {
             }
         }
 
-        console.log(`sending request ${JSON.stringify(options)}`);
+        log(`sending request ${JSON.stringify(options)}`);
 
         let request = http.request(options, res => {
             if (res.statusCode <= 200 || res.statusCode >= 300) {

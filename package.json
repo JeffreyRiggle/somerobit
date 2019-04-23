@@ -10,7 +10,9 @@
     "discord.js": "^11.4.2",
     "express": "^4.16.4",
     "moment": "^2.20.1",
-    "opusscript": "^0.0.6"
+    "opusscript": "^0.0.6",
+    "request": "^2.88.0",
+    "valid-url": "^1.0.9"
   },
   "scripts": {
     "test": "echo n/a",

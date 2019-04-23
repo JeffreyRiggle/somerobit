@@ -1,5 +1,6 @@
 import MessageSender from './messageSender';
 import {grantAccess, fullAccess} from '../accessControl';
+import {log} from '../logging';
 
 const userReg = /-u\s+([^\s"]+)|-u\s+"([^"]*)"/i;
 const singleAccessReg = /-a\s+([^\s\[]+)/i;
@@ -27,7 +28,7 @@ class GrantAccessAction extends MessageSender {
             return;
         }
 
-        console.log(`attempting to give ${user} rights ${access}`);
+        log(`attempting to give ${user} rights ${access}`);
         grantAccess(user, access);
     }
 
