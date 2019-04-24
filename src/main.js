@@ -1,19 +1,14 @@
-import Discord from 'discord.js';
 import fs from 'fs';
-import {addChannel} from './channelCache';
-import {broadcast} from './messagebroadcaster';
-import {processActions} from './deferedActionProcessor';
-import {addAction} from './actionRepository';
-import {startListening} from './messageListener';
-import {addAudioFiles} from './audioController';
-import {addShutdownAction} from './shutdownManager';
-import {setDefaultAccess, grantAccess, setInvalidAccessMessage, addPossibleAccess} from './accessControl';
+import express from 'express';
+import bodyParser from 'body-parser';
+import {startServer, getState} from './server';
+import {executeShutdown} from './shutdownManager';
+import {setWatching, log, flush} from './logging';
 import './standardActions/standardActions';
 import 'opusscript';
 
-const client = new Discord.Client();
-let configFile = '';
-let config = {};
+const app = express();
+let configFile;
 
 process.argv.forEach((val, i, arr) => {
     if (val.endsWith('json')) {
@@ -21,80 +16,61 @@ process.argv.forEach((val, i, arr) => {
     }
 });
 
-if (!configFile) {
-    throw 'No Config provided'; 
-}
+app.use(bodyParser.json());
+app.listen(8080);
 
-fs.readFile(configFile, 'utf8', (err, data) => {
-    if (err) {
-        console.log('Got error ' + err);
+app.post('/robit/start', (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({
+            errorDetail: 'Token is required'
+        });
         return;
     }
 
-    config = JSON.parse(data);
-    startServer();
+    setWatching(true);
+    startServer(req.body).then((state) => {
+        res.status(200).send({
+            status: state
+        });
+    }).catch((err) => {
+        res.status(500).send({
+            errorDetail: err
+        });
+    });
 });
 
-const startServer = () => {
-    client.login(config.token).then(() => {
-        console.log('logged in.');
+app.post('/robit/stop', (req, res) => {
+    setTimeout(() => {
+        executeShutdown();
+    });
+
+    res.status(200).send({
+        state: 'Terminated'
+    });
+});
+
+app.get('/robit/state', (req, res) => {
+    res.status(200).send({
+        state: getState()
+    });
+});
+
+app.get('/robit/logging', (req, res) => {
+    res.status(200).send(flush());
+});
+
+if (!configFile) {
+    log('No Config provided');
+} else {
+    fs.readFile(configFile, 'utf8', (err, data) => {
+        if (err) {
+            log('Got error ' + err);
+            return;
+        }
     
-        client.channels.forEach(channel => {
-            console.log(`Found channel ${channel.id} with type ${channel.type} and name ${channel.name} on server ${channel.server}`);
-    
-            addChannel(channel);
+        startServer(JSON.parse(data)).catch(err => {
+            log('Provided config file was wrong shutting down.');
+            process.exit(1);
         });
-    
-        broadcast(config.greeting);
-        processConfig();
-        startListening(client);
-        addShutdownAction(() => {
-            console.log('exiting process');
-            process.exit(0);
-        });
-    }).catch(error => {
-        console.log('login failed ' + error);
-        process.exit(1);
-    });
-};
-
-const processConfig = () => {
-    processActions(config.deferredactions);
-
-    let actionIds = [];
-    config.actions.forEach((val, i, arr) => {
-        actionIds.push(val.id);
-        addAction(val.id, val.action);
-    });
-    addPossibleAccess(actionIds);
-
-    if (!config.audioSources) {
-        return;
-    }
-
-    config.audioSources.forEach((source, index, arr) => {
-        addAudioFiles(source);
-    });
-
-    if (config.access) {
-        processAccess(config.access);
-    }
-};
-
-function processAccess(access) {
-    if (access.default) {
-        setDefaultAccess(access.default);
-    }
-
-    if (access.deniedMessage) {
-        setInvalidAccessMessage(access.deniedMessage);
-    }
-
-    if (!access.users) {
-        return;
-    }
-
-    access.users.forEach((val, index, arr) => {
-        grantAccess(val.name, val.rights);
     });
 }

@@ -1,3 +1,5 @@
+import {log} from './logging';
+
 let actions = [];
 let lastAction = null;
 
@@ -13,7 +15,7 @@ const executeShutdown = () => {
 
 function runAction(action) {
     if (lastAction) {
-        console.log('queueing action');
+        log('queueing action');
         lastAction.then(action);
         return;
     }

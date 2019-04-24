@@ -1,6 +1,7 @@
 import {createVoiceChannel} from '../channelManager';
 import {setConnection, getConnection, play} from '../audioController';
 import {addShutdownAction} from '../shutdownManager';
+import {log} from '../logging';
 import MessageSender from './messageSender';
 
 class PlayMusicAction extends MessageSender {
@@ -24,9 +25,9 @@ class PlayMusicAction extends MessageSender {
 
                 addShutdownAction(() => {
                     return channel.delete().then(chan => {
-                        console.log('Deleted channel');
+                        log('Deleted channel');
                     }).catch(error => {
-                        console.log(`Got error deleteing channel ${error}`);
+                        log(`Got error deleteing channel ${error}`);
                     });
                 });
 
@@ -34,21 +35,21 @@ class PlayMusicAction extends MessageSender {
                     resolve();
                 });
             }).catch(error => {
-                console.log(`Unable to create music channel ${error}`);
+                log(`Unable to create music channel ${error}`);
                 reject(error);
             });
         });
     }
 
     _startAudio(channel, song) {
-        console.log(`Attempting to join voice channel ${channel}`);
+        log(`Attempting to join voice channel ${channel}`);
 
         return channel.join().then(connection => {
-            console.log(`Joined voice channel ${channel}`);
+            log(`Joined voice channel ${channel}`);
             setConnection(connection);
             play(song);
         }).catch(error => {
-            console.log(`Unable to join voice channel ${error}`);
+            log(`Unable to join voice channel ${error}`);
         });
     }
 }

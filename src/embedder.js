@@ -1,4 +1,5 @@
 import {textChannelMap} from './channelCache';
+import {log} from './logging';
 
 const embedToChannel = (id, data) => {
     let channels = textChannelMap();
@@ -10,9 +11,9 @@ const embedToChannel = (id, data) => {
     }
 
     channel.send('', {embed: data}).then(message => {
-        console.log('Sent embed.');
+        log('Sent embed.');
     }).catch(error => {
-        console.log('Got error ' + error);
+        log('Got error ' + error);
     });
 }
 

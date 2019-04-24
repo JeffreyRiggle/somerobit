@@ -1,5 +1,6 @@
 import MessageSender from './messageSender';
-import {fullAccess, revokeAccess, hasAccess} from '../accessControl';
+import {fullAccess, revokeAccess} from '../accessControl';
+import {log} from '../logging';
 
 const userReg = /-u\s+([^\s"]+)|-u\s+"([^"]*)"/i;
 const singleAccessReg = /-a\s+([^\s\[]+)/i;
@@ -27,7 +28,7 @@ class RevokeAccessAction extends MessageSender {
             return;
         }
 
-        console.log(`attempting to revoke ${user} rights ${access}`);
+        log(`attempting to revoke ${user} rights ${access}`);
         revokeAccess(user, access);
     }
 

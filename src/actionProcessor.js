@@ -2,6 +2,7 @@ import {broadcast, broadcastTTS, broadcastToChannel, broadcastTTSToChannel} from
 import {embedToChannel} from './embedder';
 import {makeRequest} from './httpManager';
 import {getAction} from './actionRepository';
+import {log} from './logging';
 
 let lastProcess = null;
 
@@ -80,9 +81,9 @@ function getRandomMessage(action) {
 
 function processHttpAction(action) {
     makeRequest(action.method, action.url, action.body).then(data => {
-        console.log(`request to ${action.url} succeeded`);
+        log(`request to ${action.url} succeeded`);
     }).catch(error => {
-        console.log(`request to ${action.url} failed with ${error}`);
+        log(`request to ${action.url} failed with ${error}`);
     });
 };
 
@@ -99,9 +100,9 @@ function processMultiAction(action, requester) {
 
 function runProcess(action, requester) {
     if (lastProcess) {
-        console.log(`queueing action ${action.id}`);
+        log(`queueing action ${action.id}`);
         lastProcess.then(() => {
-            console.log(`running action ${action.id}`);
+            log(`running action ${action.id}`);
             let proc = process(action, requester);
             if (proc) {
                 lastProcess = proc;
@@ -110,7 +111,7 @@ function runProcess(action, requester) {
         return;
     }
 
-    console.log(`running action ${action.id}`);
+    log(`running action ${action.id}`);
     lastProcess = process(action, requester);
 }
 

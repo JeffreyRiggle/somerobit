@@ -1,5 +1,6 @@
 import moment from 'moment';
 import {process} from './actionProcessor';
+import {log} from './logging';
 
 const processActions = actions => {
     actions.forEach((val, i, arr) => {
@@ -26,7 +27,7 @@ const setFutureTime = action => {
     let time = moment(action.timestamp);
 
     if (!time.isValid()) {
-        console.log('Invalid time provided: ' + action.timestamp);
+        log('Invalid time provided: ' + action.timestamp);
         return;
     }
 
@@ -50,7 +51,7 @@ const setDailyTime = action => {
     let time = moment(action.daily, 'HH:mm:ss');
 
     if (!time.isValid()) {
-        console.log('Invalid time provided: ' + action.timestamp);
+        log('Invalid time provided: ' + action.timestamp);
         return;
     }
 
@@ -62,7 +63,7 @@ const setDailyTime = action => {
         futureTime = time.toDate() - now;
     }
     
-    console.log(`Queuing action for ${time.format('YYYY-MM-DD HH:mm')}`);
+    log(`Queuing action for ${time.format('YYYY-MM-DD HH:mm')}`);
 
     setTimeout(() => {
         process(action.action);
