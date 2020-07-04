@@ -22,4 +22,7 @@ jobs:
       run: yarn install --frozen-lockfile
 
     - name: Build
-      run: yarn run build
+      run: yarn run dist
+
+    - name: Build container
+      run: yarn run build-container
