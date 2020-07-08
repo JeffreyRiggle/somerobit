@@ -1,5 +1,10 @@
-name: BuildJS
-on: [push, pull_request]
+on: 
+    push:
+        branches:
+            - master
+
+name: Create Release
+
 jobs:
 
   build:
