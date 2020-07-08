@@ -1,0 +1,54 @@
+on: 
+    push:
+        branches:
+            - master
+
+name: Create Release
+
+jobs:
+
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+          node-version: '10.x'
+
+    - name: Check out code
+      uses: actions/checkout@v1
+
+    - name: Install yarn
+      run: npm install yarn -g
+    
+    - name: Install
+      run: yarn install --frozen-lockfile
+
+    - name: Build
+      run: yarn run dist
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: 1.0.${{ github.run_number }}
+        release_name: Release 1.0.${{ github.run_number }}
+        body: |
+          New release
+        draft: false
+        prerelease: false
+    
+    - name: Upload bundle
+      id: upload_bundle
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/bundle.js
+        asset_name: bundle.js
+        asset_content_type: application/javascript
