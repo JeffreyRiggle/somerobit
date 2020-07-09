@@ -22,6 +22,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:ci": "jest --coverage",
     "dist": "webpack --mode=development --env.production",
     "build": "webpack --mode=development --env.development",
     "build-container": "yarn run build && docker build -t robit .",
