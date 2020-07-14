@@ -1,9 +1,9 @@
 import http from 'http';
 import {log} from './logging';
 
-const hostReg = /http:\/\/([^:\/]*)|https:\/\/([^:\/]*)|^([^:\/]*)/i;
-const portReg = /http:\/\/[^:]*:([^\/]*)|https:\/\/[^:]*:([^\/]*)|^[^:]*:([^\/]*)/i;
-const pathReg = /http:\/\/[^:]*[^\/]*(.*)|https:\/\/[^:]*[^\/]*(.*)|^[^:]*[^\/]*(.*)/i;
+const hostReg = /https?:\/\/([^:\/]*)/i;
+const portReg = /https?:\/\/[^:]*:([^\/]*)/i;
+const pathReg = /https?:\/\/[^:]*[^\/]*(.*)/i;
 
 const makeRequest = (method, url, data) => {
     return new Promise((resolve, reject) => {
@@ -20,7 +20,7 @@ const makeRequest = (method, url, data) => {
         log(`sending request ${JSON.stringify(options)}`);
 
         let request = http.request(options, res => {
-            if (res.statusCode <= 200 || res.statusCode >= 300) {
+            if (res.statusCode < 200 || res.statusCode >= 300) {
                 reject();
                 return;
             }
@@ -62,7 +62,7 @@ const getHost = url => {
 const getPort = url => {
     let match = url.match(portReg);
 
-    if (match.length < 2) {
+    if (!match || match.length < 2) {
         return 80;
     }
 
