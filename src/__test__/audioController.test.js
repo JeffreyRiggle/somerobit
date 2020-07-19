@@ -44,6 +44,7 @@ describe('Audio Controller', () => {
         fs.statSync = jest.fn(() => ({
             isDirectory: () => false
         }));
+        fs.createWriteStream = jest.fn();
     });
 
     describe('when connection is set', () => {
