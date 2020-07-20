@@ -26,6 +26,8 @@ jest.mock('request', () => {
     }));
 });
 
+jest.mock('fs');
+
 describe('Audio Controller', () => {
     let mockConnection, mockIsUri, mockStream;
 
@@ -46,10 +48,6 @@ describe('Audio Controller', () => {
         }));
         fs.createWriteStream = jest.fn();
     });
-
-    afterEach(() => {
-        fs.createWriteStream.mockRestore();
-    })
 
     describe('when connection is set', () => {
         beforeEach(() => {
