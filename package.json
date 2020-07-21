@@ -2,6 +2,9 @@
   "license": "MIT",
   "main": "build/bundle.js",
   "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "babel-jest": "^26.1.0",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2"
   },
@@ -10,6 +13,7 @@
     "body-parser": "^1.18.3",
     "discord.js": "^11.4.2",
     "express": "^4.16.4",
+    "jest": "^26.1.0",
     "moment": "^2.20.1",
     "node-opus": "^0.3.3",
     "opusscript": "^0.0.6",
@@ -17,7 +21,8 @@
     "valid-url": "^1.0.9"
   },
   "scripts": {
-    "test": "echo n/a",
+    "test": "jest",
+    "test:ci": "jest --coverage --no-cache",
     "dist": "webpack --mode=development --env.production",
     "build": "webpack --mode=development --env.development",
     "build-container": "yarn run build && docker build -t robit .",

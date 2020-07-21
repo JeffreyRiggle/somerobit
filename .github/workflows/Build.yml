@@ -24,5 +24,8 @@ jobs:
     - name: Build
       run: yarn run dist
 
+    - name: Test
+      run: yarn run test:ci
+
     - name: Build container
       run: yarn run build-container

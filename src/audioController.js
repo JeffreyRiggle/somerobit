@@ -13,6 +13,14 @@ let stopped = false;
 let shuffled = false;
 let currentSong = {};
 
+const getAudioFiles = () => {
+    return audioFiles;
+};
+
+const isShuffled = () => {
+    return shuffled;
+};
+
 const setConnection = conn => {
     connection = conn;
 };
@@ -203,5 +211,7 @@ export {
     shuffle,
     stop,
     nextSong,
-    currentSongName
+    currentSongName,
+    getAudioFiles,
+    isShuffled
 };
