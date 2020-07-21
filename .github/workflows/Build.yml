@@ -14,18 +14,15 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v1
-
-    - name: Install yarn
-      run: npm install yarn -g
     
     - name: Install
-      run: yarn install --frozen-lockfile
+      run: npm ci
 
     - name: Build
-      run: yarn run dist
+      run: npm run dist
 
     - name: Test
-      run: yarn run test:ci
+      run: npm run test:ci
 
     - name: Build container
-      run: yarn run build-container
+      run: npm run build-container
