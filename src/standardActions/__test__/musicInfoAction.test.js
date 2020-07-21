@@ -4,7 +4,8 @@ import * as audioController from '../../audioController';
 describe('Music Info Action', () => {
     beforeEach(() => {
         audioController.currentSongName = jest.fn(() => 'somesong.mp3')
-    })
+    });
+
     it('should have the correct type', () => {
         expect(MusicInfoAction.type).toBe('standard');
     });
