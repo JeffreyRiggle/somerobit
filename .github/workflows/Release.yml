@@ -26,6 +26,15 @@ jobs:
     - name: Build
       run: npm run dist
 
+    - name: Publish
+      env:
+        dockerpassword: ${{ secrets.DOCKER }}
+        dockeruser: ${{ secrets.DOCKERUSER }}
+      run: |
+        docker login -p $dockerpassword -u $dockeruser
+        docker push jeffriggle/robit:"$GITHUB_SHA"
+        docker push jeffriggle/robit:latest
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
