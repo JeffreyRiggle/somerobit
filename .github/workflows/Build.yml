@@ -25,7 +25,11 @@ jobs:
       run: npm run test:ci
 
     - name: Build container
-      run: npm run build-container
+      run: |
+        npm run build
+        BRANCH=$(echo ${GITHUB_REF} | sed -e "s/refs\/heads\///g" | sed -e "s/\//-/g")
+        docker build . -t jeffriggle/robit:"$GITHUB_SHA"
+        docker build . -t jeffriggle/robit:"${BRANCH}"
 
     - name: Publish
       env:

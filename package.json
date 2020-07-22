@@ -25,9 +25,9 @@
     "test:ci": "jest --coverage --no-cache",
     "dist": "webpack --mode=development --env.production",
     "build": "webpack --mode=development --env.development",
-    "build-container": "npm run build && docker build -t robit .",
+    "build-container": "npm run build && docker build -t jeffriggle/robit .",
     "dev": "npm run dist && node dist/bundle.js",
     "dev-config": "npm run dist && node dist/bundle.js config.json",
-    "dev-container": "npm run build-container && docker run -p 8080:8080 -d robit"
+    "dev-container": "npm run build-container && docker run -p 8080:8080 -d jeffriggle/robit"
   }
 }

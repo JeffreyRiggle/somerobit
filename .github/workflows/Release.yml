@@ -31,6 +31,9 @@ jobs:
         dockerpassword: ${{ secrets.DOCKER }}
         dockeruser: ${{ secrets.DOCKERUSER }}
       run: |
+        npm run build
+        docker build . -t jeffriggle/robit:"$GITHUB_SHA"
+        docker build . -t jeffriggle/robit:latest
         docker login -p $dockerpassword -u $dockeruser
         docker push jeffriggle/robit:"$GITHUB_SHA"
         docker push jeffriggle/robit:latest
