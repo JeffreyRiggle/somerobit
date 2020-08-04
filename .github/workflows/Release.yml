@@ -61,3 +61,7 @@ jobs:
         asset_path: ./dist/bundle.js
         asset_name: bundle.js
         asset_content_type: application/javascript
+        
+    - name: Build Site
+      run: |
+        curl -XPOST -u "JeffreyRiggle:${{secrets.SITETOKEN}}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/JeffreyRiggle/my-site/dispatches --data '{"event_type": "release_site"}'
