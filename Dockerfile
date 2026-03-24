@@ -1,4 +1,4 @@
-FROM node:11
+FROM node:20
 WORKDIR /usr/src/app
 
 COPY build/bundle.js ./

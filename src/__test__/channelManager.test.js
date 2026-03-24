@@ -19,7 +19,7 @@ describe('Channel Manager', () => {
         });
 
         it('should create the text channel', () => {
-            expect(server.createChannel).toBeCalledWith(channelName, 'text');
+            expect(server.createChannel).toHaveBeenCalledWith(channelName, 'text');
         });
     });
 
@@ -30,7 +30,7 @@ describe('Channel Manager', () => {
         });
 
         it('should create the voice channel', () => {
-            expect(server.createChannel).toBeCalledWith(channelName, 'voice');
+            expect(server.createChannel).toHaveBeenCalledWith(channelName, 'voice');
         });
     });
 });
