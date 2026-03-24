@@ -7,6 +7,9 @@ module.exports = (env) => {
         output: {
             path: env.production ? path.resolve(__dirname, 'dist') : path.resolve(__dirname, 'build'),
             filename: 'bundle.js'
+        },
+        externals: {
+            'zlib-sync': 'commonjs zlib-sync'
         }
     }
 }
