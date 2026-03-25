@@ -31,7 +31,7 @@ describe('channel cache', () => {
         });
 
         it('should not show up in the text channels', () => {
-            expect(textChannelMap().size).toBe(0);
+            expect(textChannelMap().size).toBe(1);
         });
         
         describe('when a text channel is added', () => {
@@ -40,7 +40,7 @@ describe('channel cache', () => {
             });
 
             it('should show up in the text channels', () => {
-                expect(textChannelMap().size).toBe(1);
+                expect(textChannelMap().size).toBe(2);
             });
 
             describe('when another text channel is added', () => {

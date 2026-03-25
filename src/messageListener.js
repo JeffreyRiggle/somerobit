@@ -3,19 +3,21 @@ import {process} from './actionProcessor';
 import {hasAccess, invalidAccessMessage} from './accessControl';
 import {broadcastToChannel} from './messagebroadcaster';
 import {log} from './logging';
+import { addChannel } from './channelCache';
 
 const actionReg = /^!robit\s+([^\s]*)/i;
 const extraDataReg = /!robit\s+[^\s]*\s(.*)/i;
 
 const startListening = client => {
-    client.on('message', processMessage);
+    client.on('messageCreate', processMessage);
 };
 
 const stopListening = client => {
-    client.off('message');
+    client.off('messageCreate');
 };
 
 function processMessage(message) {
+    addChannel(message.channel);
     log(`(Channel ${message.channel.id}) ${message.author.username}: ${message.content}`);
     let actionMatch = message.content.match(actionReg);
 

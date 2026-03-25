@@ -44,13 +44,13 @@ describe('message listener', () => {
         });
 
         it('should start listening', () => {
-            expect(callbackMap.get('message')).toBeDefined();
+            expect(callbackMap.get('messageCreate')).toBeDefined();
         });
 
         describe('when a non actionable message is recieved', () => {
             beforeEach(() => {
                 message.content = '!robs';
-                callbackMap.get('message')(message);
+                callbackMap.get('messageCreate')(message);
             });
 
             it('should not process the message', () => {
@@ -61,7 +61,7 @@ describe('message listener', () => {
         describe('when actionable message is recieved but the action is invalid', () => {
             beforeEach(() => {
                 message.content = '!robit invalid';
-                callbackMap.get('message')(message);
+                callbackMap.get('messageCreate')(message);
             });
 
             it('should not process the message', () => {
@@ -74,7 +74,7 @@ describe('message listener', () => {
                 hasAccess = false;
                 message.content = '!robit someaction';
                 mockAction = { };
-                callbackMap.get('message')(message);
+                callbackMap.get('messageCreate')(message);
             });
 
             it('should not process the message', () => {
@@ -95,7 +95,7 @@ describe('message listener', () => {
                 hasAccess = false;
                 message.content = '!robit someaction';
                 mockAction = { };
-                callbackMap.get('message')(message);
+                callbackMap.get('messageCreate')(message);
             });
 
             afterEach(() => {
@@ -120,7 +120,7 @@ describe('message listener', () => {
 
             describe('when action does not have a channel', () => {
                 beforeEach(() => {
-                    callbackMap.get('message')(message);
+                    callbackMap.get('messageCreate')(message);
                 });
 
                 it('should set the channel', () => {
@@ -135,7 +135,7 @@ describe('message listener', () => {
             describe('when action does have a channel', () => {
                 beforeEach(() => {
                     mockAction.channel = 'foobar';
-                    callbackMap.get('message')(message);
+                    callbackMap.get('messageCreate')(message);
                 });
 
                 it('should process the message', () => {
@@ -146,7 +146,7 @@ describe('message listener', () => {
             describe('when message has extra data', () => {
                 beforeEach(() => {
                     message.content = '!robit someaction somedata';
-                    callbackMap.get('message')(message);
+                    callbackMap.get('messageCreate')(message);
                 });
 
                 it('should set the extra data', () => {
@@ -162,7 +162,7 @@ describe('message listener', () => {
                 beforeEach(() => {
                     mockAction.type = 'broadcast';
                     message.content = '!robit someaction somedata';
-                    callbackMap.get('message')(message);
+                    callbackMap.get('messageCreate')(message);
                 });
 
                 it('should set the message', () => {
@@ -181,7 +181,7 @@ describe('message listener', () => {
             });
 
             it('should stop listening', () => {
-                expect(callbackMap.get('message')).toBeUndefined();
+                expect(callbackMap.get('messageCreate')).toBeUndefined();
             });
         });
     });

@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import { Client, Events, GatewayIntentBits, Partials } from 'discord.js';
 import {addChannel} from './channelCache';
 import {broadcast} from './messagebroadcaster';
 import {processActions} from './deferedActionProcessor';
@@ -9,19 +9,50 @@ import {addShutdownAction} from './shutdownManager';
 import {setDefaultAccess, grantAccess, setInvalidAccessMessage, addPossibleAccess} from './accessControl';
 import {log} from './logging';
 
-const client = new Discord.Client();
+let status;
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildModeration,
+        GatewayIntentBits.GuildExpressions,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildWebhooks,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildMessageTyping,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessageReactions,
+        GatewayIntentBits.DirectMessageTyping,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildScheduledEvents,
+        GatewayIntentBits.AutoModerationConfiguration,
+        GatewayIntentBits.AutoModerationExecution,
+        GatewayIntentBits.GuildMessagePolls,
+        GatewayIntentBits.DirectMessagePolls
+    ],
+    partials: [
+        Partials.User,
+        Partials.Channel,
+        Partials.GuildMember,
+        Partials.Message,
+        Partials.Reaction,
+        Partials.GuildScheduledEvent,
+        Partials.ThreadMember,
+        Partials.SoundboardSound,
+        Partials.Poll,
+        Partials.PollAnswer,
+    ]
+});
 let state = 'Stopped';
 
 const startServer = (config) => {
     return new Promise((resolve, reject) => {
         client.login(config.token).then(() => {
             log('logged in.');
-        
-            client.channels.forEach(channel => {
-                log(`Found channel ${channel.id} with type ${channel.type} and name ${channel.name} on server ${channel.server}`);
-        
-                addChannel(channel);
-            });
         
             broadcast(config.greeting);
             processConfig(config);

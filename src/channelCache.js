@@ -25,7 +25,7 @@ const textChannelMap = () => {
     textChannels.clear();
 
     for (let channel of channels.values()) {
-        if (channel && channel.id && channel.type === 'text') {
+        if (channel && channel.id) {
             textChannels.set(channel.id, channel);
         }
     }
